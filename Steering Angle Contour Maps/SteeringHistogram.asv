@@ -1,0 +1,58 @@
+figure(1)
+plot(Vehicle_Speed.Time, Vehicle_Speed.Value)
+
+%%
+clear; clf;
+load("EnduranceData.mat")
+% mask = Vehicle_Speed.Value > 0;
+% mask(mask == 0) = NaN
+% masked = Steering_Angle_Sensor.Value .* mask;
+
+Steering_Angle_Sensor.Value = Steering_Angle_Sensor.Value + 13;
+Vehicle_Speed.Value(Vehicle_Speed.Value == 0) = NaN
+
+figure(1)
+plot(Steering_Angle_Sensor.Time, Steering_Angle_Sensor.Value)
+
+figure(2)
+histogram(Steering_Angle_Sensor.Value, 50)
+
+figure(3)
+histogram2(Steering_Angle_Sensor.Value, Vehicle_Speed.Value, 25, 'Normalization', 'percentage')
+xlabel('Steering Angle (Degrees)')
+ylabel('Vehicle Speed (mph)')
+xlim([-100 100])
+ylim([0 70])
+%%
+clear; clf;
+load("EnduranceData.mat")
+Steering_Angle_Sensor.Value = Steering_Angle_Sensor.Value + 13;
+Vehicle_Speed.Value(Vehicle_Speed.Value == 0) = NaN;
+
+% 2. Calculate 2D Histogram (e.g., 20x20 bins)
+[counts, xEdges, yEdges] = histcounts2(Steering_Angle_Sensor.Value, Vehicle_Speed.Value, 20);
+
+% 3. Calculate bin centers
+xCenter = (xEdges(1:end-1) + xEdges(2:end)) / 2;
+yCenter = (yEdges(1:end-1) + yEdges(2:end)) / 2;
+[X, Y] = meshgrid(xCenter, yCenter);
+figure(4)
+surf(X, Y, counts'); 
+shading interp; % Smooth the surface
+colormap jet;
+colorbar;
+xlabel('Steering Angle (Degrees)')
+ylabel('Vehicle Speed (mph)')
+xlim([-100 100])
+ylim([0 70])
+
+figure(5)
+contourf(X, Y, counts')
+hold on
+colormap hot;
+xline(0, 'LineStyle')
+xlabel('Steering Angle (Degrees)')
+ylabel('Vehicle Speed (mph)')
+xlim([-100 100])
+ylim([0 70])
+title("Steering Angle vs Vehicle Speed During Simulated Endurance")
